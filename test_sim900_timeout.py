@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import serial
+import re
 
 def sim900sendat(port, timeout):
     port.write("AT\r")
@@ -135,6 +136,17 @@ def sim900sendhttprequest(port, timeout) :
     print("----------")
     print(httpresponse)
     print("----------")
+
+    # 获得HTTP响应内容
+    # {"timestamp":"2014-01-29T11:35:22","value":0}
+    httppayload = re.findall(r'(\{.*?\})',httpresponse)
+    # 转化为字典
+    devicedict =  eval(httppayload[0])
+    device = devicedict['value']
+    if device :
+        print("Device Open")
+    else :
+        print("Device Close")
 
 def sim900sendshut(port, timeout) :
     port.write("AT+CIPSHUT\r")
